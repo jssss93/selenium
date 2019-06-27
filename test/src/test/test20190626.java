@@ -1,6 +1,5 @@
 package test;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
@@ -8,16 +7,13 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
 //출처: https://yonoo88.tistory.com/603 [yonoo's]
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class test20190626 {
 
@@ -28,7 +24,7 @@ public class test20190626 {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe"); // 크롬 드라이버 파일 경로설정
+		System.setProperty("webdriver.chrome.driver", "D:/2019/chromedriver.exe"); // 크롬 드라이버 파일 경로설정
 		driver = new ChromeDriver();
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);// 응답시간 5초설정
 		driver.get("http://www.naver.com");// 접속할 사이트
@@ -37,13 +33,13 @@ public class test20190626 {
 	@Test
 	public void Step_01_지식인_로그인_Test() throws Exception {
 		driver.findElement(By.id("svc.kin")).click(); // 지식인 클릭
-		driver.findElement(By.id("login_btn")).click(); // NAVER로그인 클릭
-		driver.findElement(By.id("id")).sendKeys("ID"); // ID
-		driver.findElement(By.id("pw")).sendKeys("PASSWORD"); // 비번
+		driver.findElement(By.id("gnb_login_button")).click(); // NAVER로그인 클릭
+		driver.findElement(By.id("id")).sendKeys("cjs0533"); // ID
+		driver.findElement(By.id("pw")).sendKeys("1q2w3e4r#"); // 비번
 		driver.findElement(By.className("int_jogin")).click(); // 로그인 버튼 클릭
 	}
 
-	@Test
+	/*@Test
 	public void Step_02_임시저장_Test() throws Exception {
 		for (String Handle : driver.getWindowHandles())// 새창으로 스위칭
 			driver.switchTo().window(Handle);
@@ -143,7 +139,7 @@ public class test20190626 {
 
 	@Test
 	public void Step_05_임시저장_삭제_Test() throws Exception {
-		/******* 이전 글 삭제와 동일 *******/
+		*//******* 이전 글 삭제와 동일 *******//*
 		driver.switchTo().defaultContent();
 		driver.switchTo().frame(driver.findElement(By.xpath("//*[@id='editor']")));
 		WebElement tempList1 = driver.findElement(By.className("tempsave_list"));
@@ -158,7 +154,7 @@ public class test20190626 {
 		String num = driver.findElement(By.id("temporary_save_count")).getText();
 		System.out.println("임시저장 글 개수 : " + num);
 		Thread.sleep(1000);
-	}
+	}*/
 
 	@AfterClass
 	public static void tearDown() throws Exception {
