@@ -1,4 +1,4 @@
-package test;
+package selenium;
 
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -12,7 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class INTest {
+public class sel_test2 {
 	private static WebDriver driver;
 	String Title = null;
 	String URL = null;
@@ -43,52 +43,129 @@ public class INTest {
 		//fake GPU 정보 생성
 //		js_exe.executeScript("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function(parameter) {if (parameter === 37445) {return 'NVIDIA Corporation'} if (parameter === 37446) {return 'NVIDIA GeForce GTX 1050';}return getParameter(parameter);};");
 		
-		
+		Thread.sleep(1000);
 		
 		driver.findElement(By.xpath("//*[@id=\"gnb_login_button\"]/span[3]")).click();
 		js_exe.executeScript("document.getElementsByName('id')[0].value=\'ga_blog\'");
 		js_exe.executeScript("document.getElementsByName('pw')[0].value=\'jw21250!@#\'");
 		driver.findElement(By.xpath("//*[@id=\"frmNIDLogin\"]/fieldset/input")).click();
-		Thread.sleep(3000);
+		Thread.sleep(1000);
 		driver.get("https://blog.naver.com/ga_blog");
-		Thread.sleep(3000);
+		Thread.sleep(1000);
 	    driver.switchTo().frame("mainFrame");
 	    
 	    driver.findElement(By.xpath("//*[@id='post-admin']/a[1]")).click();
 	    
-	    
-	    ///
 	    js_exe.executeScript("document.getElementById('subject').value=\'제목입니다\'");
-	    driver.switchTo().frame("se2_iframe");
-	    driver.findElement(By.xpath("/html/body")).sendKeys("test_content");
-//	    WebElement fileInput = driver.findElement(By.className("se2_file"));
-//	    fileInput.sendKeys("C:\\Users\\user\\Desktop\\캡처\\20190305_175714.png");
-//	    driver.findElement(By.xpath("//*[@class=\'se2_file\']/span[0]")).click();
+	    //내용입력시작.
+//	    driver.switchTo().frame("se2_iframe");
+//	    driver.findElement(By.xpath("/html/body")).sendKeys("test_content");
+	    
 //	    driver.switchTo().defaultContent();
 //	    driver.switchTo().frame("mainFrame");
 	    
-	    String workingDir = System.getProperty("user.dir");
-		String filepath = workingDir + "/image.png";
-//		driver.get(filepath);
-
-//		WebElement fileInput = driver.findElement(By.xpath("//*[@id=\"se2_tool\"]/div[1]/div[1]/ui[1]/li[3]"));
-		WebElement fileInput = driver.findElement(By.xpath("//*[@id=\"se2_tool\"]"));
-		System.out.println(fileInput.getText());
-//		fileInput.getText();
-		fileInput.sendKeys(filepath);
-
-		// Added a wait to make you notice the difference.
+	    String filepath = "D:/image.png";
+	    String parentHandle= driver.getWindowHandle();
+	    
+//	    sele_file(driver,filepath);		//파일 시작
+	    
+	    String prm_str="<p>test</p><p>test2</p><p>test3</p><p><br></p><p><img src=\"/upload/bb727feb-b34b-4dad-9ac3-3b3477fbfb7d.jpg\" title=\"\"></p><p><br style=\"clear:both;\">asdasd</p><p><br></p><p><img src=\"/upload/d25258d3-55a0-44fe-93a2-cf913cbe9cfd.png\" title=\"\"><br style=\"clear:both;\"><br></p>";
+	    String[] strs=prm_str.split("<p>|</p>");
+	    
+	    for(int j=1;j<strs.length-1;j=j+2) {
+	    	System.out.print(j+"==>>   ");
+	    	System.out.println(strs[j]);
+	    	if(strs[j].length()<4) {
+	    		System.out.println("write");
+	    		sele_text(driver,"<p>"+strs[j]+"</p>");
+	    	}else {
+		    	if(strs[j].substring(0, 4).equals("<img")) {
+		    		System.out.println("업로드");
+		    		sele_image(driver,filepath,parentHandle);	//사진 시작
+		    	}else {
+		    		System.out.println("write");
+		    		sele_text(driver,"<p>"+strs[j]+"</p>");	//텍스트시작
+		    	}
+	    	}
+	    }
+		
+		
+	    
 		Thread.sleep(1000);
-
-//		driver.findElement(By.xpath("//*[@class='se2_file']")).sendKeys("C:\\path\\to\\fileToUpload.txt");
-//
-//		// Added sleep to make you see the difference.
-//		Thread.sleep(1000);
-//
-//		fileInput.sendKeys(filepath);
+		
+		//전송
+		
+//		driver.switchTo().frame("se2_iframe");
+//	    driver.findElement(By.xpath("/html/body")).sendKeys("\ntest_content2");
+//	    
+//	    driver.switchTo().defaultContent();
+//		driver.switchTo().frame("mainFrame");
+		
+		driver.findElement(By.xpath("//*[@id=\"btn_preview\"]")).click();
 		
 	}
+	
+	public static void sele_text(WebDriver driver,String input_text) throws InterruptedException {
+//		Thread.sleep(3000);
+		driver.findElement(By.xpath("//*[@id=\"smart_editor2_content\"]/div[5]/ul/li[2]/button")).click();
+//		driver.switchTo().frame("se2_iframe");
+		//*[@id="se2_iframe"]
+		
+//		Thread.sleep(3000);
+	    driver.findElement(By.xpath("//*[@id=\"smart_editor2_content\"]/div[4]/textarea[1]")).sendKeys(input_text);
+	    driver.switchTo().defaultContent();
+		driver.switchTo().frame("mainFrame");
+		driver.findElement(By.xpath("//*[@id=\"smart_editor2_content\"]/div[5]/ul/li[1]/button")).click();
+		
+	}
+	
+	public static void sele_image(WebDriver driver, String imagePath,String parent_handler) throws InterruptedException {
+		Thread.sleep(1000);
+		JavascriptExecutor js_exe=(JavascriptExecutor)driver;
+//		js_exe.executeScript("document.getElementsByClassName('se2_inputarea')[0].innerHTML('<p>sadfsdafsdfsdaf</p>')");
+		js_exe.executeScript("document.getElementsByClassName('se2_inputarea').focus()");
+		//사진버튼
+		driver.findElement(By.xpath("//*[@id=\"se2_tool\"]/div[1]/ul[1]/li[1]")).click();
+		Thread.sleep(3000);
+		// Switch to new window opened
+		for (String winHandle : driver.getWindowHandles()) {
+			driver.switchTo().window(winHandle);
+		}
+		// X버튼 클릭(alert제거)
+		driver.findElement(By.xpath("/html/body/div[2]/div/button")).click();
 
+		// 내PC버튼
+		WebElement imageInput = driver.findElement(By.xpath("//*[@id=\"pc_image_file\"]"));
+		Thread.sleep(2000);
+		imageInput.sendKeys(imagePath);
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("/html/body/div[3]/header/div[2]/button")).click();
+		driver.switchTo().window(parent_handler);
+		
+		driver.switchTo().defaultContent();
+		driver.switchTo().frame("mainFrame");
+	}
+	public static void sele_file(WebDriver driver,String filePath,String parent_handler) throws InterruptedException {
+		
+		
+		driver.findElement(By.xpath("//*[@id=\"se2_tool\"]/div[1]/ul[1]/li[4]")).click();
+		
+		Thread.sleep(1000);
+		//Switch to new window opened 
+		for (String winHandle : driver.getWindowHandles()) {
+			driver.switchTo().window(winHandle);
+		}
+		
+		WebElement fileInput = driver.findElement(By.xpath("//*[@id=\"file_select\"]"));
+		fileInput.sendKeys(filePath);
+
+		driver.findElement(By.xpath("//*[@id=\"submitBtn\"]")).click();
+		
+		Thread.sleep(1000);
+		driver.switchTo().window(parent_handler);
+		driver.switchTo().defaultContent();
+		driver.switchTo().frame("mainFrame");
+	}
 	@Test
 	public void Step_01_지식인_로그인_Test() throws Exception {
 //		HttpServletRequest req = driver.;
